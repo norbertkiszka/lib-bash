@@ -8,7 +8,7 @@ But... should be usable for many other projects.
 
 - Colors.
 - Version checker.
-- Whiptain menu helper.
+- Whiptail menu helper.
 - Error handling by calling functions with colorized output.
 - Script and function call trace.
 - Trapping exit and int signal.
