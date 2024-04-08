@@ -16,14 +16,20 @@ But... should be usable for many other projects.
 - Possibility to use it directly from a terminal ($ source /path/to/lib-bash.sh) instead of from script.
 - After being called directly, it can be recalled by a some script (it shouldnt trigger any problems).
 
+## Usage
+Add `lib-bash.sh` to your script:
+```bash
+source "/path/to/lib-bash.sh"
+```
+
 ## Public functions list, description and usage
 
 List below describes functions in order as its defined by this lib.
 
 General:
-- version_is_eqal_or_greater_than
-	  Will return 1 when true, 0 otherwise.
-	  Example:
+- version_is_eqal_or_greater_than  
+	<pre>  Will return 1 when true, 0 otherwise.
+    Example:</pre>
 	```bash
 	if ! version_is_eqal_or_greater_than "${BASH_VERSION}" "1.2.3" ; then
 		echo "We have required bash version or greater"
