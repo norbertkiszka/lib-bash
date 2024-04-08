@@ -23,7 +23,7 @@ echo "--------- whiptail menu second test ---------"
 
 whiptail_menu_title_set_prefix "Test prefix | "
 whiptail_menu_dont_add_dot_in_key
-whiptail_menu_title_set_dimensions 15 60 8
+whiptail_menu_set_dimensions 15 60 8
 
 whiptail_menu_options_add "1" "but"
 whiptail_menu_options_add "2" "cat"

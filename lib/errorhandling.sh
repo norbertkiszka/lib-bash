@@ -19,6 +19,7 @@ always_show_stacktrace_at_exit()
 }
 
 # call error (exit 1) at warning
+# NOTE: this will not work when exit was trapped by __on_exit()
 forbidden_warning()
 {
 	__FORBIDDEN_WARNING="y"
@@ -72,13 +73,21 @@ warning()
 {
 	check_require_args_with_real_data "${*}"
 	local text="${*}"
-	if [ "$__SHOW_STACKTRACE_FOR_WARNINGS" != "" ] && \
-	[ "${__FORBIDDEN_WARNING}" == "" ] ; then # dont display stacktrace two times
-		text+="$(scriptstacktrace)"
-	fi
 	echo_red " WARNING: ${text}"
-	[ "${__FORBIDDEN_WARNING}" == "" ] || error "Forbidden warning: ${text}" # Next line will not be executed since error() will call exit 1
-	[ "$__ERRORHANDLING_USE_WHIPTAIL_FOR_WARNING" == "" ] || whiptail_display_warning "${text}"
+	if [ "$__SHOW_STACKTRACE_FOR_WARNINGS" != "" ] \
+	|| [ "$__INSIDE_OF_ON_EXIT" != "" ] \
+	&& [ "${__FORBIDDEN_WARNING}" == "" ] ; then # dont display stacktrace two times (__FORBIDDEN_WARNING will trigger error couple lines later)
+		echo_red "$(scriptstacktrace)"
+	fi
+	[ "${__FORBIDDEN_WARNING}" == "" ] || error "Forbidden warning"
+	# error() not always call exit
+	# whiptail inside __on_exit is no no
+	# dont display whiptail two times for same problem - this will also make same behaviour every time
+	if [ "$__ERRORHANDLING_USE_WHIPTAIL_FOR_WARNING" != "" ] \
+	&& [ "$__INSIDE_OF_ON_EXIT" == "" ] \
+	&& [ "$__FORBIDDEN_WARNING" == "" ] ; then
+		whiptail_display_warning "${*}"
+	fi
 }
 
 warning_e()
@@ -92,6 +101,11 @@ error_without_exit()
 	local text=" ERROR: ${*}"
 	echo_red "${text}"
 	[ "$__ERRORHANDLING_USE_WHIPTAIL_FOR_ERROR" == "" ] || whiptail_display_error "${*}"
+	if [ "${__INSIDE_OF_ON_EXIT}" != "" ] && [ "${__INTERNAL_ERROR_CALL}" == "" ] ; then
+		__ERROR_INSIDE_OF_ON_EXIT="y"
+		notice "error triggered inside of __on_exit()"
+	fi
+	scriptstacktrace
 }
 
 error_without_exit_e()
@@ -103,7 +117,7 @@ error()
 {
 	check_require_args_with_real_data "${*}"
 	error_without_exit "${*}"
-	if [ "${__lib_bash_called_directly}" == "" ] ; then
+	if [ "${__lib_bash_called_directly}" == "" ] && [ "${__INSIDE_OF_ON_EXIT}" == "" ] ; then
 		exit 1
 	else
 		return
@@ -192,9 +206,14 @@ button=black,white
 __on_exit()
 {
 	EXIT_STATUS=$?
+	__INSIDE_OF_ON_EXIT="y" # dont call exit one more time
+	unset __ERROR_INSIDE_OF_ON_EXIT # we will know that some error occured here or in outside function
+	unset __FORBIDDEN_WARNING # forbidden forbidden
 	
 	if [ "${EXIT_STATUS}" != "0" ] ; then
+		__INTERNAL_ERROR_CALL="y"
 		error_without_exit "Script exit with error code ${EXIT_STATUS}"
+		unset __INTERNAL_ERROR_CALL
 	else
 		info "Script exit with no error"
 	fi
@@ -203,6 +222,7 @@ __on_exit()
 	
 	for func_to_call in "${__TRAP_EXIT_AT_FIRST[@]}"
 	do
+		[ "${__ERROR_INSIDE_OF_ON_EXIT}" == "" ] || break;
 		$func_to_call
 	done
 	
@@ -215,19 +235,27 @@ __on_exit()
 		#error_without_exit "Script exit with error code ${EXIT_STATUS}"
 		for func_to_call in "${__TRAP_EXIT_AT_ERROR[@]}"
 		do
+			[ "${__ERROR_INSIDE_OF_ON_EXIT}" == "" ] || break;
 			$func_to_call
 		done
 	else
 		for func_to_call in "${__TRAP_EXIT_AT_OK[@]}"
 		do
+			[ "${__ERROR_INSIDE_OF_ON_EXIT}" == "" ] || break;
 			$func_to_call
 		done
 	fi
 	
 	for func_to_call in "${__TRAP_EXIT_AT_END[@]}"
 	do
+		[ "${__ERROR_INSIDE_OF_ON_EXIT}" == "" ] || break;
 		$func_to_call
 	done
+	
+	# If error occured somwhere here (called functions), then let others know, that we had a error
+	if [ "${EXIT_STATUS}" == "0" ] && [ "${__ERROR_INSIDE_OF_ON_EXIT}" != "" ] ; then
+		exit 1
+	fi
 }
 
 __on_sigint()
@@ -279,7 +307,7 @@ trap_exit_at_error()
 
 scriptstacktrace()
 {
-	echo " Script stack trace:"
+	echo " ------------------ Script stack trace -------------------"
 	local output=""
 	
 	local key_stack=""
@@ -301,6 +329,7 @@ scriptstacktrace()
 		unset IS_FIRST_FUNC
 	done
 	echo -en "${output}" | tac
+	echo " --------------- Script stack trace end of ---------------"
 }
 
 unset __TRAP_EXIT_AT_FIRST
@@ -311,6 +340,8 @@ unset __TRAP_EXIT_AT_OK
 declare -a __TRAP_EXIT_AT_OK
 unset __TRAP_EXIT_AT_ERROR
 declare -a __TRAP_EXIT_AT_NO_ERROR
+unset __INSIDE_OF_ON_EXIT
+unset __INTERNAL_ERROR_CALL
 
 trap __on_exit EXIT
 trap __on_sigint INT
