@@ -17,8 +17,9 @@ if [ "$__LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION" != "" ] ; then
 fi
 
 __lib_bash_filename="$(basename "$BASH_SOURCE")"
+__lib_bash_real_filename="$(realpath "$BASH_SOURCE")"
 
-if [ ${#BASH_SOURCE[@]} -eq 1 ] ; then
+if [ ${#BASH_SOURCE[@]} -eq 1 ] && [ "${1}" != "libignoredirect" ] ; then
 	__lib_bash_called_directly="y"
 	__message="${__lib_bash_filename} called directly"
 	if [ -e /usr/games/cowsay ] ; then
@@ -32,13 +33,13 @@ else
 fi
 
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
-	readonly LIB_BASH_VERSION="0.1.1"
+	readonly LIB_BASH_VERSION="0.1.2"
 	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.1"
-elif [ "${LIB_BASH_VERSION}" != "0.1.1" ]; then
-	echo "${__lib_bash_filename} called again but we have other version!!!"
+elif [ "${LIB_BASH_VERSION}" != "0.1.2" ]; then
+	echo "${__lib_bash_filename} called again but now we have other version!!!"
 fi
 
-ROOT=`pwd` # For external use. Please dont overwrite this - I cant make it readonly since this lib can be called multiple times.
+ROOT=`pwd` # For external use. Please dont overwrite this - I cant make it readonly since this lib can be called multiple times inside same enviroment.
 
 # Arg1: version to test
 # Arg2: required version
