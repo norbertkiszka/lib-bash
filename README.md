@@ -21,6 +21,7 @@ Add `lib-bash.sh` to your script:
 ```bash
 source "/path/to/lib-bash.sh"
 ```
+You can also call it directly (not from a script) and after that, You can call functions in this lib just by typing them like a in a script.
 
 ## Public functions list, description and usage
 
