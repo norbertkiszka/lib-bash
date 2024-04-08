@@ -95,7 +95,7 @@ Whiptail menu helper:
     Arg3: list height.</pre>
 - whiptail_menu_dont_add_dot_in_key  
 	<pre>  Force to not add dot in option ids.
-  Those dots are only for displaying - it will be removed after whiptail execution.</pre>
+    Those dots are only for displaying - it will be removed after whiptail execution.</pre>
 - whiptail_menu_title_set_prefix  
 	<pre>  Set prefix for titles in every whiptail_menu_execute calls (it will not be reset by whiptail_menu_reset).</pre>
 - whiptail_menu_options_add  
