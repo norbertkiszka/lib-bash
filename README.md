@@ -1,8 +1,10 @@
 ## What is this?
 
-This is a library primarily intented for a project Orange Rigol at https://github.com/norbertkiszka/rigol-orangerigol-build
+This is a bash library primarily intented for a project Orange Rigol at https://github.com/norbertkiszka/rigol-orangerigol-build
 
-But... should be usable for many other projects.
+But... should be usable for many other projects using bash scripts.
+
+It can be used directly straight from the terminal.
 
 ## Features in short
 
