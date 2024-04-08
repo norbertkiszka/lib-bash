@@ -57,11 +57,13 @@ Error handling and debugging:
 - errorhandling_use_whiptail_for_warning, errorhandling_use_whiptail_for_error  
 	<pre>  Will force warning, warning_e, error and error_e to additionally show same message by whiptail
 - whiptail_display_warning  </pre>
-	<pre>  Display warning only by whiptail... And nothing more.
-    It will return after displaying whiptail msgbox.</pre>
+	<pre>  Display warning only by whiptail... And nothing more than just that.
+    It will return after displaying whiptail msgbox.
+    Used internally, but it can be used outside of this lib.</pre>
 - whiptail_display_error  
-	<pre>  Display error only by whiptail... And nothing more.
-    It will return after displaying whiptail msgbox.</pre>
+	<pre>  Display error only by whiptail... And nothing more than just that.
+    It will return after displaying whiptail msgbox.
+    Used internally, but it can be used outside of this lib.</pre>
 
 Traps:
 - trap_exit_at_first  
