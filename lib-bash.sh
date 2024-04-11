@@ -33,9 +33,9 @@ else
 fi
 
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
-	readonly LIB_BASH_VERSION="0.1.2"
+	readonly LIB_BASH_VERSION="0.1.3"
 	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.1"
-elif [ "${LIB_BASH_VERSION}" != "0.1.2" ]; then
+elif [ "${LIB_BASH_VERSION}" != "0.1.3" ]; then
 	echo "${__lib_bash_filename} called again but now we have other version!!!"
 fi
 

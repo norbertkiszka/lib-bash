@@ -43,7 +43,7 @@ From now any bash exit will cause to go back to loop in previous bash which will
 
 After that You can type this:
 ```bash
-source "/path/to/lib-bash.sh" libignoredirect # it will ignore direct call and it will behave same as in script
+source "/path/to/lib-bash.sh" libignoredirect # it will ignore direct call and it will behave same as included from script
 ```
 In that way, call to exit from this lib will cause to kill nested bash and return to previous bash which will execute another bash in a loop, instead of closing terminal emulator or using return when no arg ignoredirect is given.
 
@@ -86,7 +86,13 @@ Error handling and debugging:
 - check_require_args_with_real_data  
 	<pre>  Function helper to require arg(s).</pre>
 - is_executable  
-	<pre>  Check if given command is executable (by bash).</pre>
+	<pre>  Check if given command is executable by bash.
+	
+    It will check only first arg, since first arg is a command and remaining args are args...</pre>
+- require_executable  
+	<pre>  Helper for functions that require (first) arg to be executable by bash (uses is_executable())
+	
+    It will check only first arg, since first arg is a command and remaining args are args...</pre>
 - info, notice, warning, error_without_exit, error, success, success_whiptail  
 	<pre>  Self explanatory.
 	
@@ -130,21 +136,49 @@ Whiptail menu helper:
 	
     Normally is no need to call it, since its being called everytime in function whiptail_menu_execute.</pre>
 - whiptail_menu_set_height  
-	<pre>  Set different menubox height than default.</pre>
+	<pre>  Set different menubox height than default.
+	
+    This option is one time - its reset to default after each whiptail_menu_execute() call.
+    
+    See: whiptail_menu_set_default_height, whiptail_menu_set_default_dimensions</pre>
 - whiptail_menu_set_width  
-	<pre>  Set different menubox width than default.</pre>
+	<pre>  Set different menubox width than default.
+	
+    This option is one time - its reset to default after each whiptail_menu_execute() call.
+    
+    See: whiptail_menu_set_default_width, whiptail_menu_set_default_dimensions</pre>
 - whiptail_menu_set_list_height  
-	<pre>  Set different menubox list height than default.</pre>
+	<pre>  Set different menubox list height than default.
+	
+    This option is one time - its reset to default after each whiptail_menu_execute() call.
+    
+    See: whiptail_menu_set_default_list_height, whiptail_menu_set_default_dimensions</pre>
 - whiptail_menu_set_dimensions  
 	<pre>  Arg1: height.
     Arg2: width.
-    Arg3: list height.</pre>
+    Arg3: list height.
+    
+    See: whiptail_menu_set_default_dimensions</pre>
+- whiptail_menu_set_default_height, whiptail_menu_set_default_width, whiptail_menu_set_default_list_height
+	<pre>  Self explanatory.</pre>
 - whiptail_menu_dont_add_dot_in_key  
 	<pre>  Force to not add dot in option ids.
 	
-    Those dots are only for displaying - it will be removed after whiptail execution.</pre>
+    Those dots are only for displaying - it will be removed from WHIPTAIL_MENU_OPTION_ID by whiptail_menu_execute.
+	
+    This option is one time - its reset to default (display dot) after each whiptail_menu_execute() call.</pre>
 - whiptail_menu_title_set_prefix  
 	<pre>  Set prefix for titles in every whiptail_menu_execute calls (it will not be reset by whiptail_menu_reset).</pre>
+- whiptail_menu_set_backtitle  
+	<pre>  Set backtitle for next whiptail_menu_execute call.</pre>
+- whiptail_menu_set_default_backtitle, whiptail_menu_is_option_id_exist  
+	<pre>  Self explanatory.</pre>
+- whiptail_menu_set_default_item  
+	<pre>  User will see selected this option id.
+	
+    Option should be previously added by using whiptail_menu_options_add(), otherwise it will generate warning.
+    
+    See: warning, forbidden_warning</pre>
 - whiptail_menu_options_add  
 	<pre>  Add option to display.
 	

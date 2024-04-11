@@ -35,12 +35,13 @@ check_require_args_with_real_data()
 
 is_executable()
 {
-	type "${*}" &> /dev/null && return 0 || return 1
+	type "${1}" &> /dev/null && return 0 || return 1
 }
 
+# Remember to pass Your function args into this function
 require_executable()
 {
-	is_executable "${*}" || error "${FUNCNAME[1]}() requies arg to be executable, but ${*} doesnt look like a executable"
+	is_executable "${1}" || error "${FUNCNAME[1]}() requies first arg to be executable, but \"${*}\" doesnt look like a executable"
 }
 
 # info with normal echo
@@ -105,7 +106,7 @@ error_without_exit()
 		__ERROR_INSIDE_OF_ON_EXIT="y"
 		notice "error triggered inside of __on_exit()"
 	fi
-	scriptstacktrace
+	[ "${__INTERNAL_ERROR_CALL}" == "" ] || scriptstacktrace # dont call scriptstacktrace twice in __on_exit
 }
 
 error_without_exit_e()
@@ -212,10 +213,10 @@ __on_exit()
 	
 	if [ "${EXIT_STATUS}" != "0" ] ; then
 		__INTERNAL_ERROR_CALL="y"
-		error_without_exit "Script exit with error code ${EXIT_STATUS}"
+		error_without_exit "Script exit with error code ${EXIT_STATUS} (PID: $$)"
 		unset __INTERNAL_ERROR_CALL
 	else
-		info "Script exit with no error"
+		info "Script exit with no error (PID: $$)"
 	fi
 	
 	local func_to_call=""
