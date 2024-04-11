@@ -129,6 +129,7 @@ whiptail_menu_execute()
 	info "Executing menu: \"${1}\""
 	[ ${#__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[@]} -gt 0 ] || error "${FUNCNAME}: no options added via whiptail_menu_options_add"
 	
+	local value=""
 	local -a options
 	local -a args
 	local title="${__WHIPTAIL_MENU_TITLE_PREFIX}${1}"
@@ -142,12 +143,16 @@ whiptail_menu_execute()
 	if [ "${__WHIPTAIL_MENU_DONT_ADD_DOT_IN_KEY}" == "" ] ; then
 		for key in "${__WHIPTAIL_MENU_OPTIONS_ORDER[@]}"
 		do
-			options+=("${key}." "   ${__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[$key]}")
+			value="${__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[$key]}"
+			[ "$value" == "" ] || value="   $value"
+			options+=("${key}." "   ${value}")
 		done
 	else
 		for key in "${__WHIPTAIL_MENU_OPTIONS_ORDER[@]}"
 		do
-			options+=("${key}" "   ${__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[$key]}")
+			value="${__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[$key]}"
+			[ "$value" == "" ] || value="   $value"
+			options+=("${key}" "   ${value}")
 		done
 	fi
 	
