@@ -130,9 +130,15 @@ whiptail_menu_execute()
 	[ ${#__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[@]} -gt 0 ] || error "${FUNCNAME}: no options added via whiptail_menu_options_add"
 	
 	local value=""
-	local -a options
 	local -a args
+	local -a options
+	local min_width
+	
 	local title="${__WHIPTAIL_MENU_TITLE_PREFIX}${1}"
+	
+	[ "$3" == "" ] || __WHIPTAIL_MENU_HEIGHT=$3
+	[ "$4" == "" ] || __WHIPTAIL_MENU_WIDTH=$4
+	[ "$5" == "" ] || __WHIPTAIL_MENU_LIST_HEIGHT=$5
 	
 	[ "${title}" == "" ] || args+=("--title=$title")
 	[ "${__WHIPTAIL_MENU_BACKTITLE}" == "" ] || args+=("--backtitle=$__WHIPTAIL_MENU_BACKTITLE")
@@ -155,6 +161,9 @@ whiptail_menu_execute()
 			options+=("${key}" "   ${value}")
 		done
 	fi
+	
+	min_width=$((${#title}+6))
+	[ "$__WHIPTAIL_MENU_WIDTH" -ge $min_width ] || __WHIPTAIL_MENU_WIDTH=$min_width
 	
 	set +e
 	WHIPTAIL_MENU_OPTION_ID=$(whiptail "${args[@]}" --menu "${2}" --cancel-button Exit --ok-button Select ${__WHIPTAIL_MENU_HEIGHT} ${__WHIPTAIL_MENU_WIDTH} ${__WHIPTAIL_MENU_LIST_HEIGHT} \
