@@ -17,48 +17,48 @@ __colors_DEFAULT="\\033[0m"
 echo_green()
 {
 	echo -en "${__colors_GREEN}"
-	echo -n "${*}"
+	echo -n "${@}"
 	echo -e "${__colors_DEFAULT}"
 }
 
 # echo with -e
 echo_green_e()
 {
-	echo -e "${__colors_GREEN}${*}${__colors_DEFAULT}"
+	echo -e "${__colors_GREEN}${@}${__colors_DEFAULT}"
 }
 
 echo_red()
 {
 	echo -en "${__colors_RED}"
-	echo -n "${*}"
+	echo -n "${@}"
 	echo -e "${__colors_DEFAULT}"
 }
 
 echo_red_e()
 {
-	echo -e "${__colors_RED}${*}${__colors_DEFAULT}"
+	echo -e "${__colors_RED}${@}${__colors_DEFAULT}"
 }
 
 echo_yellow()
 {
 	echo -en "${__colors_YELLOW}"
-	echo -n "${*}"
+	echo -n "${@}"
 	echo -e "${__colors_DEFAULT}"
 }
 
 echo_yellow_e()
 {
-	echo -e "${__colors_YELLOW}${*}${__colors_DEFAULT}"
+	echo -e "${__colors_YELLOW}${@}${__colors_DEFAULT}"
 }
 
 echo_white()
 {
 	echo -en "${__colors_WHITE}"
-	echo -n "${*}"
+	echo -n "${@}"
 	echo -e "${__colors_DEFAULT}"
 }
 
 echo_white_e()
 {
-	echo -e "${__colors_WHITE}${*}${__colors_DEFAULT}"
+	echo -e "${__colors_WHITE}${@}${__colors_DEFAULT}"
 }

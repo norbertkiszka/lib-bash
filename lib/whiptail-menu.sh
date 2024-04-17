@@ -43,9 +43,9 @@ whiptail_menu_set_list_height()
 
 whiptail_menu_set_dimensions()
 {
-	__WHIPTAIL_MENU_HEIGHT="${1}"
-	__WHIPTAIL_MENU_WIDTH="${2}"
-	__WHIPTAIL_MENU_LIST_HEIGHT="${3}"
+	[ "${1}" == ""  ] || __WHIPTAIL_MENU_HEIGHT="${1}"
+	[ "${2}" == ""  ] || __WHIPTAIL_MENU_WIDTH="${2}"
+	[ "${3}" == ""  ] || __WHIPTAIL_MENU_LIST_HEIGHT="${3}"
 }
 
 whiptail_menu_set_default_height()
@@ -65,9 +65,9 @@ whiptail_menu_set_default_list_height()
 
 whiptail_menu_set_default_dimensions()
 {
-	__WHIPTAIL_MENU_DEFAULT_HEIGHT="${1}"
-	__WHIPTAIL_MENU_DEFAULT_WIDTH="${2}"
-	__WHIPTAIL_MENU_DEFAULT_LIST_HEIGHT="${3}"
+	[ "${1}" == ""  ] || __WHIPTAIL_MENU_DEFAULT_HEIGHT="${1}"
+	[ "${2}" == ""  ] || __WHIPTAIL_MENU_DEFAULT_WIDTH="${2}"
+	[ "${3}" == ""  ] || __WHIPTAIL_MENU_DEFAULT_LIST_HEIGHT="${3}"
 }
 
 # This option is being reset after every whiptail_menu_execute call.
@@ -80,18 +80,18 @@ whiptail_menu_dont_add_dot_in_key()
 # This option is NOT being reset after whiptail_menu_execute call.
 whiptail_menu_title_set_prefix()
 {
-	__WHIPTAIL_MENU_TITLE_PREFIX="${*}"
+	__WHIPTAIL_MENU_TITLE_PREFIX="${@}"
 }
 
 whiptail_menu_set_backtitle()
 {
-	__WHIPTAIL_MENU_BACKTITLE="${*}"
+	__WHIPTAIL_MENU_BACKTITLE="${@}"
 }
 
 whiptail_menu_set_default_backtitle()
 {
-	__WHIPTAIL_MENU_DEFAULT_BACKTITLE="${*}"
-	[ "$__WHIPTAIL_MENU_BACKTITLE" == "" ] && __WHIPTAIL_MENU_BACKTITLE="${*}"
+	__WHIPTAIL_MENU_DEFAULT_BACKTITLE="${@}"
+	[ "$__WHIPTAIL_MENU_BACKTITLE" == "" ] && __WHIPTAIL_MENU_BACKTITLE="${@}"
 }
 
 whiptail_menu_is_option_id_exist()
@@ -102,7 +102,7 @@ whiptail_menu_is_option_id_exist()
 
 whiptail_menu_set_default_item()
 {
-	local required_item="${*}"
+	local required_item="${@}"
 	
 	if whiptail_menu_is_option_id_exist "${required_item}" ; then
 		warning "${FUNCNAME}: there is no added menu item with id \"${required_item}\" (yet)..."
@@ -111,11 +111,44 @@ whiptail_menu_set_default_item()
 }
 
 # Add one option.
-# Usage: whiptail_menu_options_add key name
+# Usage: whiptail_menu_option_add key name
+# Usage: whiptail_menu_option_add "" name
+whiptail_menu_option_add()
+{
+	local key="$1"
+	if [ "$key" == "" ] ; then
+		if [ "${#__WHIPTAIL_MENU_OPTIONS_ORDER[@]}" -lt 1 ] ; then
+			key=1
+		else
+			((key=__WHIPTAIL_MENU_OPTIONS_ORDER[-1]+1))
+		fi
+	fi
+	__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING["${key}"]="${2}"
+	__WHIPTAIL_MENU_OPTIONS_ORDER+=("$key")
+}
+
+# alias of whiptail_menu_option_add
+whiptail_menu_add_option()
+{
+	whiptail_menu_option_add $@
+}
+
+# alias of whiptail_menu_option_add
+# In versions before 0.2.0 it was a typo
 whiptail_menu_options_add()
 {
-	__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING["${1}"]="${2}"
-	__WHIPTAIL_MENU_OPTIONS_ORDER+=("$1")
+	whiptail_menu_option_add $@
+}
+
+whiptail_menu_count_options()
+{
+	echo ${#__WHIPTAIL_MENU_OPTIONS_ORDER[@]}
+}
+
+# alias of whiptail_menu_count_options
+whiptail_menu_options_count()
+{
+	whiptail_menu_count_options
 }
 
 # Arg1: menu name (optional).
@@ -127,7 +160,7 @@ whiptail_menu_options_add()
 whiptail_menu_execute()
 {
 	info "Executing menu: \"${1}\""
-	[ ${#__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[@]} -gt 0 ] || error "${FUNCNAME}: no options added via whiptail_menu_options_add"
+	[ ${#__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[@]} -gt 0 ] || error "${FUNCNAME}: no options added via whiptail_menu_option_add"
 	
 	local value=""
 	local -a args

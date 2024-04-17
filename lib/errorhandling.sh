@@ -25,8 +25,13 @@ forbidden_warning()
 	__FORBIDDEN_WARNING="y"
 }
 
+forbidden_warning_disable()
+{
+	__FORBIDDEN_WARNING=""
+}
+
 # Will do error if function is called with no args or empty text or white spaces in arg(s).
-# You have to pass $* to first arg of this function - everytime.
+# You have to pass $@ to first arg of this function - everytime.
 check_require_args_with_real_data()
 {
 	local teststring="$(echo -n ${1})" # trim whitespaces
@@ -41,67 +46,69 @@ is_executable()
 # Remember to pass Your function args into this function
 require_executable()
 {
-	is_executable "${1}" || error "${FUNCNAME[1]}() requies first arg to be executable, but \"${*}\" doesnt look like a executable"
+	is_executable "${1}" || error "${FUNCNAME[1]}() requies first arg to be executable, but \"${1}\" doesnt look like a executable"
 }
 
 # info with normal echo
 info()
 {
-	check_require_args_with_real_data "${*}"
-	local text=" INFO: ${*}"
+	check_require_args_with_real_data "${@}"
+	local text=" INFO: ${@}"
 	echo_green "${text}"
 }
 
 # info with echo -e
 info_e()
 {
-	info "$(echo -en "${*}")"
+	info "$(echo -en "${@}")"
 }
 
 notice()
 {
-	check_require_args_with_real_data "${*}"
-	local text=" NOTICE: ${*}"
+	check_require_args_with_real_data "${@}"
+	local text=" NOTICE: ${@}"
 	echo_yellow "${text}"
 }
 
 notice_e()
 {
-	notice "$(echo -en "${*}")"
+	notice "$(echo -en "${@}")"
 }
 
 warning()
 {
-	check_require_args_with_real_data "${*}"
-	local text="${*}"
+	check_require_args_with_real_data "${@}"
+	local text="${@}"
 	echo_red " WARNING: ${text}"
 	if [ "$__SHOW_STACKTRACE_FOR_WARNINGS" != "" ] \
 	|| [ "$__INSIDE_OF_ON_EXIT" != "" ] \
 	&& [ "${__FORBIDDEN_WARNING}" == "" ] ; then # dont display stacktrace two times (__FORBIDDEN_WARNING will trigger error couple lines later)
 		echo_red "$(scriptstacktrace)"
 	fi
-	[ "${__FORBIDDEN_WARNING}" == "" ] || error "Forbidden warning"
+	if [ "${__FORBIDDEN_WARNING}" != "" ] && [ "${__INSIDE_OF_ON_EXIT}" == "" ] ; then
+		error "Forbidden warning"
+	fi
 	# error() not always call exit
 	# whiptail inside __on_exit is no no
 	# dont display whiptail two times for same problem - this will also make same behaviour every time
 	if [ "$__ERRORHANDLING_USE_WHIPTAIL_FOR_WARNING" != "" ] \
 	&& [ "$__INSIDE_OF_ON_EXIT" == "" ] \
 	&& [ "$__FORBIDDEN_WARNING" == "" ] ; then
-		whiptail_display_warning "${*}"
+		whiptail_display_warning "${@}"
 	fi
 }
 
 warning_e()
 {
-	warning "$(echo -en "${*}")"
+	warning "$(echo -en "${@}")"
 }
 
 error_without_exit()
 {
-	check_require_args_with_real_data "${*}"
-	local text=" ERROR: ${*}"
+	check_require_args_with_real_data "${@}"
+	local text=" ERROR: ${@}"
 	echo_red "${text}"
-	[ "$__ERRORHANDLING_USE_WHIPTAIL_FOR_ERROR" == "" ] || whiptail_display_error "${*}"
+	[ "$__ERRORHANDLING_USE_WHIPTAIL_FOR_ERROR" == "" ] || whiptail_display_error "${@}"
 	if [ "${__INSIDE_OF_ON_EXIT}" != "" ] && [ "${__INTERNAL_ERROR_CALL}" == "" ] ; then
 		__ERROR_INSIDE_OF_ON_EXIT="y"
 		notice "error triggered inside of __on_exit()"
@@ -111,13 +118,13 @@ error_without_exit()
 
 error_without_exit_e()
 {
-	error_without_exit "$(echo -en "${*}")"
+	error_without_exit "$(echo -en "${@}")"
 }
 
 error()
 {
-	check_require_args_with_real_data "${*}"
-	error_without_exit "${*}"
+	check_require_args_with_real_data "${@}"
+	error_without_exit "${@}"
 	if [ "${__lib_bash_called_directly}" == "" ] && [ "${__INSIDE_OF_ON_EXIT}" == "" ] ; then
 		exit 1
 	else
@@ -127,24 +134,24 @@ error()
 
 error_e()
 {
-	error "$(echo -en "${*}")"
+	error "$(echo -en "${@}")"
 }
 
 success()
 {
-	check_require_args_with_real_data "${*}"
-	local text=" SUCCESS: ${*}"
+	check_require_args_with_real_data "${@}"
+	local text=" SUCCESS: ${@}"
 	echo_green "${text}"
 }
 
 success_e()
 {
-	success "$(echo -en "${*}")"
+	success "$(echo -en "${@}")"
 }
 
 success_whiptail()
 {
-	check_require_args_with_real_data "${*}"
+	check_require_args_with_real_data "${@}"
 	PREVIOUS_NEWT_COLORS=$NEWT_COLORS
 	export NEWT_COLORS='
 window=,green
@@ -152,13 +159,13 @@ border=white,green
 textbox=white,green
 button=black,white
 '
-	whiptail --title "Orange Rigol Build System" --msgbox "${*}" --ok-button "OK" 15 80 0
+	whiptail --title "Orange Rigol Build System" --msgbox "${@}" --ok-button "OK" 15 80 0
 	NEWT_COLORS=$PREVIOUS_NEWT_COLORS
 }
 
 success_whiptail_e()
 {
-	success_whiptail "$(echo -en "${*}")"
+	success_whiptail "$(echo -en "${@}")"
 }
 
 errorhandling_use_whiptail_for_warning()
@@ -181,7 +188,7 @@ errorhandling_use_whiptail_for_error()
 
 whiptail_display_warning()
 {
-	MESSAGE="WARNING: ${*}"
+	MESSAGE="WARNING: ${@}"
 	local PREVIOUS_NEWT_COLORS=$NEWT_COLORS
 	export NEWT_COLORS='
 border=red,
@@ -192,7 +199,7 @@ border=red,
 
 whiptail_display_error()
 {
-	MESSAGE="ERROR: ${*}"
+	MESSAGE="ERROR: ${@}"
 	local PREVIOUS_NEWT_COLORS=$NEWT_COLORS
 	export NEWT_COLORS='
 window=,red

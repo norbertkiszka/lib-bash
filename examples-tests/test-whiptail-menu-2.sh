@@ -8,9 +8,9 @@ set -e
 source $(dirname $0)/../lib-bash.sh
 
 
-whiptail_menu_options_add "1" "Alice"
-whiptail_menu_options_add "2" "Norbert"
-whiptail_menu_options_add "3" "Somebody else"
+whiptail_menu_option_add "1" "Alice"
+whiptail_menu_option_add "2" "Norbert"
+whiptail_menu_option_add "3" "Somebody else"
 
 whiptail_menu_execute "My name is:"
 

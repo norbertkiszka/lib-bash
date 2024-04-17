@@ -33,10 +33,12 @@ else
 fi
 
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
-	readonly LIB_BASH_VERSION="0.1.3"
-	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.1"
-elif [ "${LIB_BASH_VERSION}" != "0.1.3" ]; then
+	readonly LIB_BASH_VERSION="0.2.0"
+	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.2"
+elif [ "${LIB_BASH_VERSION}" != "0.2.0" ]; then
 	echo "${__lib_bash_filename} called again but now we have other version!!!"
+	echo "Please restart bash if You want to load other version."
+	exit 1
 fi
 
 ROOT=`pwd` # For external use. Please dont overwrite this - I cant make it readonly since this lib can be called multiple times inside same enviroment.
@@ -62,4 +64,6 @@ __lib_bash_build_libdir="$(dirname $BASH_SOURCE)/lib"
 source ${__lib_bash_build_libdir}/colors.sh
 source ${__lib_bash_build_libdir}/sctrace.sh
 source ${__lib_bash_build_libdir}/errorhandling.sh
+source ${__lib_bash_build_libdir}/sys.sh
 source ${__lib_bash_build_libdir}/whiptail-menu.sh
+source ${__lib_bash_build_libdir}/git.sh
