@@ -288,6 +288,20 @@ sys_partition_get_last_sector()
 	sgdisk -i "$2" "$1" | grep -F "Last sector" | awk '{print $3}'
 }
 
+# Get last partition name (ex.: sdb8)
+# Usage: sys_get_last_partition path_to_device
+sys_get_last_partition_name()
+{
+	lsblk "${1}" -l | tail -1 | awk '{print $1}'
+}
+
+# Get number of last partition
+# Usage: sys_get_last_partition path_to_device
+sys_get_last_partition_num()
+{
+	partx -g "${1}" | tail -1 | awk '{print $1}'
+}
+
 __sys_clean_mounts()
 {
 	local point
