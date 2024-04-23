@@ -305,8 +305,15 @@ sys_get_last_partition_num()
 __sys_clean_mounts()
 {
 	local point
-	for point in ${__SYS_TMP_MOUNTS[@]}
-	do
+	local indices
+	local j
+	
+	[ "${#__SYS_TMP_MOUNTS[@]}" -lt 1 ] && return
+	
+	indices=(${!__SYS_TMP_MOUNTS[@]})
+	for ((i=${#indices[@]} - 1; i >= 0; i--)) ; do
+		j=${indices[$i]}
+		point="${__SYS_TMP_MOUNTS[$j]}"
 		if [ "$(mount | grep -F "${point}")" != "" ] ; then
 			notice "Lazy umount ${point}"
 			umount -l "${point}" || true
