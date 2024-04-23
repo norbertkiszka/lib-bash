@@ -7,6 +7,30 @@
 # Author: Norbert Kiszka and others
 # License: GPL v2
 
+# Clone a git repository
+git_clone()
+{
+	git clone --recurse-submodules $@
+}
+
+# Alias of a git_clone
+clone()
+{
+	git_clone $@
+}
+
+# Pull changes from a git repository
+git_pull()
+{
+	git pull --recurse-submodules $@
+}
+
+# Alias of a git_clone
+pull()
+{
+	git_pull $@
+}
+
 # Usage: git_last_commit_hash_short [optional repo path]
 git_last_commit_hash_short()
 {

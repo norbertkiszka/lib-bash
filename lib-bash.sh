@@ -7,7 +7,7 @@
 # Some of code is a copy from https://sourceforge.net/projects/libbash/
 
 if [ "$__LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION" != "" ] ; then
-	__message="Lib-Bash: Here we go again..."
+	__message="Lib-Bash: Here we go again"
 	if [ -e /usr/games/cowsay ] ; then
 		/usr/games/cowsay "$__message"
 	else
@@ -33,9 +33,9 @@ else
 fi
 
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
-	readonly LIB_BASH_VERSION="0.2.2"
+	readonly LIB_BASH_VERSION="0.2.3"
 	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.2"
-elif [ "${LIB_BASH_VERSION}" != "0.2.2" ]; then
+elif [ "${LIB_BASH_VERSION}" != "0.2.3" ]; then
 	echo "${__lib_bash_filename} called again but now we have other version!!!"
 	echo "Please restart bash if You want to load other version."
 	exit 1
@@ -67,3 +67,8 @@ source ${__lib_bash_build_libdir}/errorhandling.sh
 source ${__lib_bash_build_libdir}/sys.sh
 source ${__lib_bash_build_libdir}/whiptail-menu.sh
 source ${__lib_bash_build_libdir}/git.sh
+
+# Variable from app (from a user script)
+if [ "$REQUIRED_LIB_BASH_VERSION_AT_LEAST" != "" ] && ! version_is_eqal_or_greater_than "${LIB_BASH_VERSION}" "${REQUIRED_LIB_BASH_VERSION_AT_LEAST}" ; then
+	error "This app requires lib-bash version "${REQUIRED_LIB_BASH_VERSION_AT_LEAST}" or greater but ${LIB_BASH_VERSION} was detected. Please execute git pull inside $(dirname $BASH_SOURCE) in order to update lib-bash."
+fi
