@@ -314,6 +314,26 @@ sys_get_last_partition_num()
 	partx -g "${1}" | tail -1 | awk '{print $1}'
 }
 
+sys_get_root_partition_path()
+{
+	findmnt --noheadings --output=SOURCE /
+}
+
+sys_get_udev_path()
+{
+	findmnt --noheadings --output=TARGET udev
+}
+
+sys_get_root_device_name()
+{
+	udevadm info --query=path --name="$(sys_get_root_partition_path)" | awk -F'/' '{print $(NF-1)}'
+}
+
+sys_get_root_device_path()
+{
+	echo "$(sys_get_udev_path)/$(sys_get_root_device_name)"
+}
+
 __sys_clean_mounts()
 {
 	local point

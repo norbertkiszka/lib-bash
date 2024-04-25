@@ -33,9 +33,9 @@ else
 fi
 
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
-	readonly LIB_BASH_VERSION="0.2.5"
+	readonly LIB_BASH_VERSION="0.2.6"
 	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.2"
-elif [ "${LIB_BASH_VERSION}" != "0.2.5" ]; then
+elif [ "${LIB_BASH_VERSION}" != "0.2.6" ]; then
 	echo "${__lib_bash_filename} called again but now we have other version!!!"
 	echo "Please restart bash if You want to load other version."
 	exit 1
