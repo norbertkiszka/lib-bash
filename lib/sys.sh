@@ -13,6 +13,7 @@ unset __SYS_ADDITIONAL_BINDS
 declare -a __SYS_ADDITIONAL_BINDS
 unset __SYS_TMP_MOUNTS
 declare -a __SYS_TMP_MOUNTS
+__SYS_IS_UBUNTU=""
 
 __SYS_MESSAGE_PLEASE_FIX="Please fix Your system or try to reboot it."
 __SYS_MESSAGE_MISSING="is missing or this is something else than should be. ${__SYS_MESSAGE_PLEASE_FIX}"
@@ -146,6 +147,17 @@ __sys_unset_tmp_mount()
 {
 	local i
 	for i in ${!__SYS_TMP_MOUNTS[@]} ; do if [ "${__SYS_TMP_MOUNTS[i]}" == "$@" ] ; then unset __SYS_TMP_MOUNTS[i] ; fi ; done
+}
+
+sys_is_ubuntu()
+{
+	[ "$__SYS_IS_UBUNTU" == "y" ] && return 0
+	return 1
+}
+
+sys_add_arch()
+{
+	dpkg --add-architecture "${1}" || build_error "Failed to add foreign architecture ${1} into Your system. Check error(s) message(s) and try again."
 }
 
 # Usage: sys_chroot_add_bind source_dir destination_dir
@@ -334,6 +346,18 @@ __sys_clean_tmpdirs()
 	done
 }
 
+__sys_check_is_ubuntu()
+{
+	__SYS_IS_UBUNTU="n"
+	[ -e /etc/os-release ] || return
+
+	if grep -i "ubuntu" /etc/os-release > /dev/null ; then
+		__SYS_IS_UBUNTU="y"
+	fi
+}
+
 # NOTE: __sys_clean_mounts must be before __sys_clean_tmpdirs
 trap_exit_at_error __sys_clean_mounts
 trap_exit_at_first __sys_clean_tmpdirs
+
+__sys_check_is_ubuntu
