@@ -11,15 +11,10 @@ __WHIPTAIL_MENU_DEFAULT_BACKTITLE=""
 # Remove all previously added options and settings.
 whiptail_menu_reset()
 {
-	unset __WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING
-	unset __WHIPTAIL_MENU_OPTIONS_ORDER
-	unset __WHIPTAIL_MENU_DONT_ADD_DOT_IN_KEY
-	unset __WHIPTAIL_MENU_HEIGHT
-	unset __WHIPTAIL_MENU_WIDTH
-	unset __WHIPTAIL_MENU_LIST_HEIGHT
-	unset __WHIPTAIL_MENU_DEFAULT_ITEM
-	declare -A __WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING
-	declare -a __WHIPTAIL_MENU_OPTIONS_ORDER
+	__WHIPTAIL_MENU_DONT_ADD_DOT_IN_KEY=""
+	__WHIPTAIL_MENU_DEFAULT_ITEM=""
+	__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING=()
+	__WHIPTAIL_MENU_OPTIONS_ORDER=()
 	__WHIPTAIL_MENU_HEIGHT=$__WHIPTAIL_MENU_DEFAULT_HEIGHT
 	__WHIPTAIL_MENU_WIDTH=$__WHIPTAIL_MENU_DEFAULT_WIDTH
 	__WHIPTAIL_MENU_LIST_HEIGHT=$__WHIPTAIL_MENU_DEFAULT_LIST_HEIGHT
@@ -116,6 +111,7 @@ whiptail_menu_set_default_item()
 whiptail_menu_option_add()
 {
 	local key="$1"
+	
 	if [ "$key" == "" ] ; then
 		if [ "${#__WHIPTAIL_MENU_OPTIONS_ORDER[@]}" -lt 1 ] ; then
 			key=1
@@ -123,6 +119,7 @@ whiptail_menu_option_add()
 			((key=__WHIPTAIL_MENU_OPTIONS_ORDER[-1]+1))
 		fi
 	fi
+	
 	__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING["${key}"]="${2}"
 	__WHIPTAIL_MENU_OPTIONS_ORDER+=("$key")
 }
@@ -134,7 +131,7 @@ whiptail_menu_add_option()
 }
 
 # alias of whiptail_menu_option_add
-# In versions before 0.2.0 it was a typo
+# In versions before 0.2.0 it was a typo - hence this alias
 whiptail_menu_options_add()
 {
 	whiptail_menu_option_add $@
@@ -235,3 +232,6 @@ __WHIPTAIL_MENU_TITLE_PREFIX=""
 __WHIPTAIL_MENU_BACKTITLE=""
 WHIPTAIL_MENU_OPTION_ID=
 WHIPTAIL_MENU_OPTION_NAME=
+declare -a __WHIPTAIL_MENU_OPTIONS_ORDER
+__WHIPTAIL_MENU_DONT_ADD_DOT_IN_KEY=""
+__WHIPTAIL_MENU_DEFAULT_ITEM=""
