@@ -91,18 +91,23 @@ whiptail_menu_set_default_backtitle()
 
 whiptail_menu_is_option_id_exist()
 {
-	[ "${__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[$1]+isset}" ] && return 1
-	return 0
+	[ "${__WHIPTAIL_MENU_OPTIONS_KEY_TO_STRING[$1]+isset}" ] && return 0
+	return 1
 }
 
 whiptail_menu_set_default_item()
 {
 	local required_item="${@}"
 	
-	if whiptail_menu_is_option_id_exist "${required_item}" ; then
+	if ! whiptail_menu_is_option_id_exist "${required_item}" ; then
 		warning "${FUNCNAME}: there is no added menu item with id \"${required_item}\" (yet)..."
 	fi
 	__WHIPTAIL_MENU_DEFAULT_ITEM="${required_item}"
+}
+
+whiptail_menu_set_default_item_force()
+{
+	__WHIPTAIL_MENU_DEFAULT_ITEM="${@}"
 }
 
 # Add one option.
