@@ -20,6 +20,7 @@ __echo_prefix()
 	if [ "$__PRINT_DATETIME" == "1" ] ; then
 		echo -n "" `date "+%D %T"`
 	fi
+	echo -n " "
 }
 
 echo_()
