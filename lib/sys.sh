@@ -27,7 +27,7 @@ sys_cpdir()
 		error "${FUNCNAME}: bad usage"
 	fi
 	if [ ! -d "$1" ] ; then
-		error "${FUNCNAME}: source doesnt exist or its not a directory"
+		error "${FUNCNAME}: source doesn't exist or its not a directory"
 	fi
 	if [ ! -r "$1" ] ; then
 		error "${FUNCNAME}: source dir is not readable"
@@ -36,7 +36,7 @@ sys_cpdir()
 		error "${FUNCNAME}: source dir has no execute bit"
 	fi
 	if [ ! -d "$2" ] ; then
-		error "${FUNCNAME}: destination doesnt exist or its not a directory"
+		error "${FUNCNAME}: destination doesn't exist or its not a directory"
 	fi
 	if [ ! -w "$2" ] ; then
 		error "${FUNCNAME}: destination is not writeable"
@@ -224,7 +224,7 @@ sys_chroot()
 	#sys_mount_tmp --bind /dev/pts "$chroot_dest/dev/pts" || error "Failed to mount --bind /dev/pts"
 	
 	if [ "$(expr ${#__SYS_ADDITIONAL_BINDS[@]} % 2)" == "1" ] ; then
-		error "${FUNCNAME}: elements num in \$__SYS_ADDITIONAL_BINDS should be even..." # another cant happen
+		error "${FUNCNAME}: elements num in \$__SYS_ADDITIONAL_BINDS should be even..." # another can't happen
 	fi
 	
 	for ((i=0; i<${#__SYS_ADDITIONAL_BINDS[@]}; i=i+2))

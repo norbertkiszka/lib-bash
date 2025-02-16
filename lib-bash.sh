@@ -32,11 +32,13 @@ else
 		__lib_bash_called_directly=""
 fi
 
+__LIB_BASH_VERSION="0.2.9"
+
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
-	readonly LIB_BASH_VERSION="0.2.8"
+	readonly LIB_BASH_VERSION="${__LIB_BASH_VERSION}"
 	readonly __LIB_BASH_REQUIRED_MINIMAL_BASH_VERSION="4.2"
-elif [ "${LIB_BASH_VERSION}" != "0.2.8" ]; then
-	echo "${__lib_bash_filename} called again but now we have other version!!!"
+elif [ "${LIB_BASH_VERSION}" != "${__LIB_BASH_VERSION}" ]; then
+	echo "${__lib_bash_filename} called again but now we have another version!!!"
 	echo "Please restart bash if You want to load other version."
 	exit 1
 fi
@@ -58,7 +60,7 @@ if ! version_is_eqal_or_greater_than "${BASH_VERSION}" "${__LIB_BASH_REQUIRED_MI
 	exit 1
 fi
 
-ROOT=`pwd` # For external use. Please dont overwrite this - I cant make it readonly since this lib can be called multiple times inside same enviroment.
+ROOT=`pwd` # For external use. Please dont overwrite this - I can't make it readonly since this lib can be called multiple times inside same enviroment.
 
 __lib_bash_build_libdir="$(dirname $BASH_SOURCE)/lib"
 source ${__lib_bash_build_libdir}/colors.sh
