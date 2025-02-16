@@ -157,7 +157,7 @@ sys_is_ubuntu()
 
 sys_add_arch()
 {
-	dpkg --add-architecture "${1}" || build_error "Failed to add foreign architecture ${1} into Your system. Check error(s) message(s) and try again."
+	dpkg --add-architecture "${1}" || error "Failed to add foreign architecture ${1} into Your system. Check error(s) message(s) and try again."
 }
 
 # Usage: sys_chroot_add_bind source_dir destination_dir

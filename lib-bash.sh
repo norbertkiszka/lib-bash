@@ -32,7 +32,7 @@ else
 		__lib_bash_called_directly=""
 fi
 
-__LIB_BASH_VERSION="0.2.10"
+__LIB_BASH_VERSION="0.2.11"
 
 if [ "${LIB_BASH_VERSION}" == "" ] ; then
 	readonly LIB_BASH_VERSION="${__LIB_BASH_VERSION}"
